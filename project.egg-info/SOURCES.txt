@@ -1,0 +1,13 @@
+setup.py
+notifs/__init__.py
+notifs/items.py
+notifs/middlewares.py
+notifs/pipelines.py
+notifs/settings.py
+notifs/spiders/__init__.py
+notifs/spiders/njoftime.py
+project.egg-info/PKG-INFO
+project.egg-info/SOURCES.txt
+project.egg-info/dependency_links.txt
+project.egg-info/entry_points.txt
+project.egg-info/top_level.txt
