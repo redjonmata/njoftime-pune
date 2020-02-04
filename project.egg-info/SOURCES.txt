@@ -5,6 +5,7 @@ notifs/middlewares.py
 notifs/pipelines.py
 notifs/settings.py
 notifs/spiders/__init__.py
+notifs/spiders/employers.py
 notifs/spiders/njoftime.py
 project.egg-info/PKG-INFO
 project.egg-info/SOURCES.txt
