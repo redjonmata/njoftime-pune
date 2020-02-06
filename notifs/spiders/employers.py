@@ -5,6 +5,8 @@ import scrapy
 # from scrapy.loader import ItemLoader
 # from njoftime.items import Njoftime
 from slugify import slugify
+from notifs.items import Employer
+from scrapy.loader import ItemLoader
 
 
 class EmployersSpider(scrapy.Spider):
@@ -28,6 +30,8 @@ class EmployersSpider(scrapy.Spider):
         yield scrapy.Request(employer_url, self.parse_employer, meta={'name':name})
 
     def parse_employer(self, response):
+        employer = ItemLoader(item=Employer(), response=response)
+
         details = response.css('#view-aboutme > div:nth-child(2) > div')
         image = 'http://njoftime.com/' + response.css('.avatarcontainer > img::attr(src)').extract_first().strip()
         dls = {}
@@ -37,8 +41,8 @@ class EmployersSpider(scrapy.Spider):
             key = detail.css('dt').extract_first().strip().replace('<dt>','').replace('</dt>','')
             dls[key] = detail.css('dd').extract_first().strip().replace('<dd>','').replace('</dd>','')
 
-        employer_details['name'] = response.meta.get('name')
-        employer_details['slug'] = slugify(response.meta.get('name'))
+        employer_details['name'] = response.meta.get('name').replace("'",'').replace('"',"")
+        employer_details['slug'] = slugify(response.meta.get('name').replace("'",'').replace('"',""))
 
         if 'Qyteti:' in dls.keys():
             employer_details['city'] = dls['Qyteti:']
@@ -51,7 +55,7 @@ class EmployersSpider(scrapy.Spider):
             employer_details['country'] = ''
 
         if 'Adresa:' in dls.keys():
-            employer_details['address'] = dls['Adresa:']
+            employer_details['address'] = dls['Adresa:'].replace("'",'').replace('"',"")
         else:
             employer_details['address'] = ''
 
@@ -71,25 +75,33 @@ class EmployersSpider(scrapy.Spider):
             employer_details['mobile_phone'] = ''
 
         if 'Rubrika/fusha e aktivitetit:' in dls.keys():
-            employer_details['field'] = dls['Rubrika/fusha e aktivitetit:']
+            employer_details['category'] = dls['Rubrika/fusha e aktivitetit:']
         else:
-            employer_details['field'] = ''
+            employer_details['category'] = ''
 
-        if 'Specifikat/Specializimi:' in dls.keys():
-            employer_details['specialized_field'] = dls['Specifikat/Specializimi:']
-        else:
-            employer_details['specialized_field'] = ''
+        # yield {
+        #     'name': employer_details['name'],
+        #     'slug': employer_details['slug'],
+        #     'city': employer_details['city'],
+        #     'country': employer_details['country'],
+        #     'address': employer_details['address'],
+        #     'phone': employer_details['phone'],
+        #     'fax': employer_details['fax'],
+        #     'mobile_phone': employer_details['mobile_phone'],
+        #     'field': employer_details['field'],
+        #     'specialized_field': employer_details['specialized_field'],
+        #     'image': image
+        # }
 
-        yield {
-            'name': employer_details['name'],
-            'slug': employer_details['slug'],
-            'city': employer_details['city'],
-            'country': employer_details['country'],
-            'address': employer_details['address'],
-            'phone': employer_details['phone'],
-            'fax': employer_details['fax'],
-            'mobile_phone': employer_details['mobile_phone'],
-            'field': employer_details['field'],
-            'specialized_field': employer_details['specialized_field'],
-            'image': image
-        }
+        employer.add_value('name', employer_details['name'])
+        employer.add_value('slug', employer_details['slug'])
+        employer.add_value('city', employer_details['city'])
+        employer.add_value('country', employer_details['country'])
+        employer.add_value('address', employer_details['address'])
+        employer.add_value('phone', employer_details['phone'])
+        employer.add_value('mobile_phone', employer_details['mobile_phone'])
+        employer.add_value('fax', employer_details['fax'])
+        employer.add_value('category', employer_details['category'])
+        employer.add_value('image', image)
+
+        yield employer.load_item()

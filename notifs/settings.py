@@ -9,6 +9,11 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
+MYSQL_HOST = 'localhost'
+MYSQL_USER = 'root'
+MYSQL_PASS = 'root'
+MYSQL_DB = 'notifications'
+
 BOT_NAME = 'notifs'
 
 SPIDER_MODULES = ['notifs.spiders']
@@ -64,9 +69,9 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'notifs.pipelines.NotifsPipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'notifs.pipelines.NjoftimePipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

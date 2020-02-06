@@ -9,11 +9,23 @@ import scrapy
 
 
 class Njoftime(scrapy.Item):
-    url = scrapy.Field()
     title = scrapy.Field()
-    date = scrapy.Field()
+    slug = scrapy.Field()
     description = scrapy.Field()
     employer = scrapy.Field()
-    employer_image = scrapy.Field()
-    employer_contact = scrapy.Field()
-    pass
+    url = scrapy.Field()
+    job_date = scrapy.Field()
+    created_at = scrapy.Field()
+
+
+class Employer(scrapy.Item):
+    name = scrapy.Field()
+    slug = scrapy.Field()
+    city = scrapy.Field()
+    country = scrapy.Field()
+    address = scrapy.Field()
+    phone = scrapy.Field()
+    mobile_phone = scrapy.Field()
+    fax = scrapy.Field()
+    category = scrapy.Field()
+    image = scrapy.Field()
