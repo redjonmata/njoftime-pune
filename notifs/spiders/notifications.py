@@ -5,17 +5,16 @@ import scrapy
 from slugify import slugify
 from datetime import date
 from datetime import datetime
-from notifs.items import Njoftime
+from notifs.items import Notification
 from scrapy.loader import ItemLoader
 import html
 
 
-class NjoftimeSpider(scrapy.Spider):
-    name = 'notifs'
+class NotificationsSpider(scrapy.Spider):
+    name = 'notifications'
     start_urls = ['http://www.njoftime.com/forumdisplay.php?14-ofroj-vende-pune']
 
     def parse(self, response):
-        notif = ItemLoader(item=Njoftime(), response=response)
         for notif in response.css('.inner > h3'):
             url = notif.xpath('a/@href').get()
 
@@ -25,7 +24,7 @@ class NjoftimeSpider(scrapy.Spider):
             yield response.follow(next_page, self.parse)
 
     def parse_notification(self, response):
-        notif = ItemLoader(item=Njoftime(), response=response)
+        notif = ItemLoader(item=Notification(), response=response)
 
         html_date = response.css('.date')
         job_date = html_date.css('span ::text').get().strip().replace(',','')
@@ -41,16 +40,6 @@ class NjoftimeSpider(scrapy.Spider):
         today = date.today().strftime("%Y-%m-%d")
         now = datetime.now().strftime("%H:%M:%S")
         description = html.escape(response.css('.postcontent').get().strip())
-
-        # yield {
-        #     'url': response.url,
-        #     'employer' : employer,
-        #     'title': title,
-        #     'slug': slug,
-        #     'job_date': job_date + job_time,
-        #     'created_at': today + " " + now,
-        #     'description': description
-        # }
 
         notif.add_value('title',title)
         notif.add_value('slug',slug)

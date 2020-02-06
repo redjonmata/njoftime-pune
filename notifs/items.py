@@ -8,7 +8,7 @@
 import scrapy
 
 
-class Njoftime(scrapy.Item):
+class Notification(scrapy.Item):
     title = scrapy.Field()
     slug = scrapy.Field()
     description = scrapy.Field()

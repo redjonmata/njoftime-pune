@@ -7,7 +7,7 @@
 
 import pymysql
 from scrapy.utils.project import get_project_settings
-from notifs.items import Njoftime
+from notifs.items import Notification
 from notifs.items import Employer
 from scrapy.exceptions import DropItem
 from slugify import slugify
@@ -19,7 +19,7 @@ def id_generator(size=6, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 
-class NjoftimePipeline(object):
+class NotificationsPipeline(object):
     def __init__(self):
         settings = get_project_settings()
         host = settings.get('MYSQL_HOST')
@@ -31,8 +31,8 @@ class NjoftimePipeline(object):
         self.cursor = self.connection.cursor()
 
     def process_item(self, item, spider):
-        if isinstance(item, Njoftime):
-            return self.handle_njoftime(item, spider)
+        if isinstance(item, Notification):
+            return self.handle_notification(item, spider)
         if isinstance(item, Employer):
             return self.handle_employer(item, spider)
 
@@ -40,7 +40,7 @@ class NjoftimePipeline(object):
         self.cursor.close()
         self.connection.close()
 
-    def handle_njoftime(self, item, spider):
+    def handle_notification(self, item, spider):
         select_query = "SELECT id FROM employers WHERE slug = '" + item['employer'][0] + "'"
         rows_count = self.cursor.execute(select_query)
 
@@ -66,7 +66,7 @@ class NjoftimePipeline(object):
                 self.cursor.execute("INSERT INTO categories (name, slug) VALUES ('%s', '%s')" % (item['category'][0], slugify(item['category'][0])))
                 self.connection.commit()
 
-                select_query = "SELECT id FROM categories WHERE slug = '" + item['category'][0] + "'"
+                select_query = "SELECT id FROM categories WHERE slug = '" + slugify(item['category'][0]) + "'"
                 self.cursor.execute(select_query)
                 category_id = self.cursor.fetchone()
 
@@ -77,7 +77,7 @@ class NjoftimePipeline(object):
     def add_job_notification(self, employer_id, item):
         random_string = id_generator()
 
-        query = """INSERT INTO job_notifications (title, slug, description, employer_id, url, job_date, created_at)
+        query = """INSERT INTO notifications (title, slug, description, employer_id, url, job_date, created_at)
                     VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')""" \
                 % (item['title'][0], item['slug'][0] + "-" + random_string, item['description'][0], employer_id, item['url'][0],
                    item['job_date'][0], item['created_at'][0])

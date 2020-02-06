@@ -10,7 +10,7 @@ from scrapy.loader import ItemLoader
 
 
 class EmployersSpider(scrapy.Spider):
-    name = 'employer'
+    name = 'employers'
     start_urls = ['http://www.njoftime.com/forumdisplay.php?14-ofroj-vende-pune']
 
     def parse(self, response):
@@ -78,20 +78,6 @@ class EmployersSpider(scrapy.Spider):
             employer_details['category'] = dls['Rubrika/fusha e aktivitetit:']
         else:
             employer_details['category'] = ''
-
-        # yield {
-        #     'name': employer_details['name'],
-        #     'slug': employer_details['slug'],
-        #     'city': employer_details['city'],
-        #     'country': employer_details['country'],
-        #     'address': employer_details['address'],
-        #     'phone': employer_details['phone'],
-        #     'fax': employer_details['fax'],
-        #     'mobile_phone': employer_details['mobile_phone'],
-        #     'field': employer_details['field'],
-        #     'specialized_field': employer_details['specialized_field'],
-        #     'image': image
-        # }
 
         employer.add_value('name', employer_details['name'])
         employer.add_value('slug', employer_details['slug'])
