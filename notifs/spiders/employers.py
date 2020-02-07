@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
-# from scrapy.loader import ItemLoader
-# from njoftime.items import Njoftime
 from slugify import slugify
 from notifs.items import Employer
 from scrapy.loader import ItemLoader

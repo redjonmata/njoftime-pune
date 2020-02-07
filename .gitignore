@@ -3,4 +3,5 @@ notifs/__init__.pyc
 notifs/items.pyc
 notifs/settings.pyc
 notifs/spiders/__init__.pyc
-notifs/spiders/njoftime.pyc
+notifs/spiders/employers.pyc
+notifs/spiders/notifications.pyc
